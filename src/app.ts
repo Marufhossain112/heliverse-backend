@@ -28,11 +28,19 @@ app.post('/users', async (req, res) => {
 // get all users
 app.get('/users', async (req, res) => {
     try {
-        // const newUser = new User(req.body);
-        const result = await User.find();
+        // const { page } = req.query;
+        const page = Number(req.query.page) || 1;
+        const limit = 20;
+        const skip = (page - 1) * limit;
+        console.log(page);
+        const result = await User.find().skip(skip).limit(limit);
+        const total = await User.countDocuments();
         res.json({
             success: true,
             message: "Successfully fetched all user",
+            page: page,
+            total,
+            skip,
             data: result
         });
     } catch (error) {
@@ -86,8 +94,6 @@ app.delete('/users/:id', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
-
-
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
