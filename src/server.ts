@@ -1,9 +1,11 @@
 
-const express = require('express');
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
 import 'dotenv/config';
-const app = express();
+import app from './app';
+
 const port = 5000;
+
 async function main() {
     try {
         await mongoose.connect(process.env.database_url);
@@ -16,6 +18,4 @@ async function main() {
     }
 }
 main();
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
+
