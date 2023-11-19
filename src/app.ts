@@ -27,7 +27,7 @@ app.post('/users', async (req, res) => {
             message: "Successfully created user",
             data: savedUser
         });
-    } catch (error) {
+    } catch (error : any) {
         res.status(500).json({ error: error.message });
     }
 });
@@ -38,12 +38,12 @@ app.get('/users', async (req, res) => {
         const page = Number(req.query.page) || 1;
         const limit = 20;
         const skip = (page - 1) * limit;
-        const searchTerm = req.query.searchTerm;
+        const searchTerm : any = req.query.searchTerm;
         // Extract filters from the request query
         const { domain, gender, available } = req.query;
         console.log(domain, gender, available);
         // Build the filter object based on the provided criteria
-        const filter = {
+        const filter : any = {
             $or: [
                 { first_name: new RegExp(searchTerm, 'i') },
                 { last_name: new RegExp(searchTerm, 'i') }
@@ -70,7 +70,7 @@ app.get('/users', async (req, res) => {
             skip,
             data: result
         });
-    } catch (error) {
+    } catch (error : any) {
         res.status(500).json({ error: error.message });
     }
 });
@@ -85,7 +85,7 @@ app.get('/users/:id', async (req, res) => {
             message: "Successfully fetched a user",
             data: result
         });
-    } catch (error) {
+    } catch (error : any) {
         res.status(500).json({ error: error.message });
     }
 });
@@ -102,7 +102,7 @@ app.put('/users/:id', async (req, res) => {
             message: "Successfully updated a user",
             data: result
         });
-    } catch (error) {
+    } catch (error : any) {
         res.status(500).json({ error: error.message });
     }
 });
@@ -117,7 +117,7 @@ app.delete('/users/:id', async (req, res) => {
             message: "Successfully deleted a user",
             data: result
         });
-    } catch (error) {
+    } catch (error : any) {
         res.status(500).json({ error: error.message });
     }
 });
@@ -131,7 +131,7 @@ app.post('/team', async (req, res) => {
             message: "Successfully created team",
             data: createdTeam
         });
-    } catch (error) {
+    } catch (error : any) {
         res.status(500).json({ error: error.message });
     }
 });
@@ -148,7 +148,7 @@ app.get('/team/:id', async (req, res) => {
             message: "Successfully fetched a team",
             data: result
         });
-    } catch (error) {
+    } catch (error : any) {
         res.status(500).json({ error: error.message });
     }
 });
