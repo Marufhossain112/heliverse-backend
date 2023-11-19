@@ -9,7 +9,13 @@ app.use(express.urlencoded({ extended: true }));
 
 const userSchema = new mongoose.Schema({ first_name: String, last_name: String, email: String, gender: String, avatar: String, domain: String, available: Boolean });
 // Define a simple User model
+const teamSchema = new mongoose.Schema({
+    teamName: String,
+    members: [{ type: userSchema, ref: 'User' }]
+});
 const User = mongoose.model('User', userSchema);
+const Team = mongoose.model('Team', teamSchema);
+
 
 // Create a new user
 app.post('/users', async (req, res) => {
@@ -109,6 +115,37 @@ app.delete('/users/:id', async (req, res) => {
         res.json({
             success: true,
             message: "Successfully deleted a user",
+            data: result
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+// Create a team
+app.post('/team', async (req, res) => {
+    try {
+        const newTeam = new Team(req.body);
+        const createdTeam = await newTeam.save();
+        res.json({
+            success: true,
+            message: "Successfully created team",
+            data: createdTeam
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// get a single team
+// get a single user
+app.get('/team/:id', async (req, res) => {
+    try {
+        // const newUser = new User(req.body);
+        const { id } = req.params;
+        const result = await Team.find({ _id: new mongoose.Types.ObjectId(id) });
+        res.json({
+            success: true,
+            message: "Successfully fetched a team",
             data: result
         });
     } catch (error) {
