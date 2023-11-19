@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const userSchema = new mongoose.Schema({ first_name: String, last_name: String, email: String, gender: String, avatar: String, domain: String, available: String });
+const userSchema = new mongoose.Schema({ first_name: String, last_name: String, email: String, gender: String, avatar: String, domain: String, available: Boolean });
 // Define a simple User model
 const User = mongoose.model('User', userSchema);
 
@@ -33,13 +33,28 @@ app.get('/users', async (req, res) => {
         const limit = 20;
         const skip = (page - 1) * limit;
         const searchTerm = req.query.searchTerm;
-        console.log(searchTerm);
-        const result = await User.find({
+        // Extract filters from the request query
+        const { domain, gender, available } = req.query;
+        console.log(domain, gender, available);
+        // Build the filter object based on the provided criteria
+        const filter = {
             $or: [
                 { first_name: new RegExp(searchTerm, 'i') },
                 { last_name: new RegExp(searchTerm, 'i') }
             ]
-        }).skip(skip).limit(limit);
+        };
+        if (domain) {
+            filter.domain = domain;
+        }
+
+        if (gender) {
+            filter.gender = gender;
+        }
+
+        if (available) {
+            filter.available = available;
+        }
+        const result = await User.find(filter).skip(skip).limit(limit);
         const total = await User.countDocuments();
         res.json({
             success: true,
